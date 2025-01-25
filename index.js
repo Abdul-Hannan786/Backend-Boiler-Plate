@@ -10,15 +10,19 @@ import authenticateUser from "./middlewares/authenticateuser.js"
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded())
-app.use(cors("*"))
+app.use(
+  cors({
+    origin: "http://localhost:3000", 
+    credentials:true,})
+);
 app.use(cookieParser())
 
 mongoose.connect(process.env.MONGODB_URI).then(() => console.log("DB connected"))
   .catch((err) => console.log(err))
 
 
-app.get("/", authenticateUser, (req, res)=> {
-   console.log(req.user)
+app.get("/profile", authenticateUser, (req, res)=> {
+   console.log(req.user.fullname)
 })
 
 

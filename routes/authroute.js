@@ -20,15 +20,24 @@ router.post("/register", async (req, res) => {
     password: hashedPassword,
   });
   delete newUser.password;
-  const token = jwt.sign({ userid: newUser._id, newUser:newUser.email, fullname: newUser.fullname }, process.env.AUTH_SECRET);
-  res.cookie("token", token);
+  const token = jwt.sign(
+    { userid: newUser._id, newUser: newUser.email, fullname: newUser.fullname },
+    process.env.AUTH_SECRET
+  );
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 1000,
+  });
   sendResponse(res, 201, newUser, false, "User Registered Successfully");
 });
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email }).lean();
-  if (!user) return sendResponse(res, 403, null, true, "User is not registered");
+  if (!user)
+    return sendResponse(res, 403, null, true, "User is not registered");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid)
@@ -36,17 +45,31 @@ router.post("/login", async (req, res) => {
 
   delete user.password;
 
-  var token = jwt.sign({ userid: user._id, email:user.email, fullname: user.fullname }, process.env.AUTH_SECRET ,);
-  res.cookie("token", token)
-  sendResponse(res, 200, {
-    user,
-    token
-}, false, 'User Login Successfully')
+  var token = jwt.sign(
+    { userid: user._id, email: user.email, fullname: user.fullname },
+    process.env.AUTH_SECRET
+  );
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 *60*1000,
+  });
+  sendResponse(
+    res,
+    200,
+    {
+      user,
+      token,
+    },
+    false,
+    "User Login Successfully"
+  );
 });
 
 router.get("/logout", (req, res) => {
-    res.cookie("token", null)
-    sendResponse(res, 200, null, false, 'User Logout Successfully')
-})
+  res.cookie("token", null);
+  sendResponse(res, 200, null, false, "User Logout Successfully");
+});
 
 export default router;
