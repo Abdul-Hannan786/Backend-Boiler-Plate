@@ -20,15 +20,11 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log(err));
 
-app.get("/profile", authenticateUser, (req, res) => {
-  console.log(req.user.fullname);
-});
-
 app.get("/", (req, res) => {
   res.send("Hello world")
 })
 
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server is running on PORT ${process.env.PORT}`)
