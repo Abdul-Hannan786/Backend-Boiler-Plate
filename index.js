@@ -24,6 +24,10 @@ app.get("/profile", authenticateUser, (req, res) => {
   console.log(req.user.fullname);
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello world")
+})
+
 app.use("/auth", authRoutes);
 
 app.listen(process.env.PORT, () =>
