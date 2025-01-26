@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
   res.send("Hello world")
 })
 
-app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server is running on PORT ${process.env.PORT}`)
