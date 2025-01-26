@@ -1,4 +1,4 @@
-import sendResponse from "../helpers/sendResponse.js";
+import sendResponse from "../helpers/SendResponse.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import User from "../models/User.js";
